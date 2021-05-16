@@ -50,7 +50,7 @@ const BlogIndex = ({ siteTitle, posts }) => {
 
 export default BlogIndex;
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   return {
     props: {
       siteTitle: '{F} konf demo',

@@ -21,7 +21,7 @@ const BlogPostTemplate = ({ post }) => {
 
 export default BlogPostTemplate;
 
-export async function getStaticProps({ params: { slug } }) {
+export async function getServerSideProps({ params: { slug } }) {
   return {
     props: {
       post: await getPost(slug),
@@ -29,15 +29,15 @@ export async function getStaticProps({ params: { slug } }) {
   };
 }
 
-export async function getStaticPaths() {
-  const postIds = await getPostIds();
-  return {
-    paths: postIds.map((postId) => ({
-      params: postId,
-    })),
-    fallback: false,
-  };
-}
+// export async function getStaticPaths() {
+//   const postIds = await getPostIds();
+//   return {
+//     paths: postIds.map((postId) => ({
+//       params: postId,
+//     })),
+//     fallback: false,
+//   };
+// }
 
 async function getPost(id) {
   const res = await fetch(`http://localhost:5001/posts/${id}`);
@@ -45,8 +45,8 @@ async function getPost(id) {
   return post;
 }
 
-async function getPostIds() {
-  const res = await fetch('http://localhost:5001/postIds');
-  const postIds = await res.json();
-  return postIds;
-}
+// async function getPostIds() {
+//   const res = await fetch('http://localhost:5001/postIds');
+//   const postIds = await res.json();
+//   return postIds;
+// }

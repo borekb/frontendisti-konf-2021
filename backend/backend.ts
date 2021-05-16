@@ -3,8 +3,8 @@ import { match as pathToRegexpMatch, MatchResult } from 'https://deno.land/x/pat
 import { faker } from 'https://deno.land/x/deno_faker@v1.0.3/locale/en.ts';
 import { sleep } from 'https://deno.land/x/sleep@v1.2.0/mod.ts';
 
-const howManyPosts = 50;
-const delayInSeconds = Math.random() * (0.08 - 0.02) + 0.02;
+const howManyPosts = 3;
+const delayInSeconds = Math.random();
 
 const PORT = 5001;
 const server = serve({ port: PORT });
