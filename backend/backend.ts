@@ -3,8 +3,8 @@ import { match as pathToRegexpMatch, MatchResult } from 'https://deno.land/x/pat
 import { faker } from 'https://deno.land/x/deno_faker@v1.0.3/locale/en.ts';
 import { sleep } from 'https://deno.land/x/sleep@v1.2.0/mod.ts';
 
-const howManyPosts = 10;
-const delayInSeconds = Math.random() * (0.6 - 0.3) + 0.3;
+const howManyPosts = 50;
+const delayInSeconds = Math.random() * (0.08 - 0.02) + 0.02;
 
 const PORT = 5001;
 const server = serve({ port: PORT });
@@ -13,6 +13,7 @@ console.log(`🚀 Server is running on http://localhost:${PORT}`);
 const routes: Route[] = [
   { name: 'post', path: '/posts/:id', handler: handlePost },
   { name: 'posts', path: '/posts', handler: handlePosts },
+  { name: 'postIds', path: '/postIds', handler: handlePostIds },
 ];
 
 async function handlePost(req: ServerRequest, match: MatchResult<{ id: string }>) {
@@ -23,8 +24,20 @@ async function handlePost(req: ServerRequest, match: MatchResult<{ id: string }>
 }
 
 async function handlePosts(req: ServerRequest) {
-  const posts = await Promise.all([...Array(howManyPosts).keys()].map((postId) => getPost(String(postId))));
-  console.log(posts);
+  // const posts = await Promise.all([...Array(howManyPosts).keys()].map((postId) => getPost(String(postId))));
+  // Slow sequential resolution is intentional; no Promise.all!
+  const ids = [...Array(howManyPosts).keys()];
+  const posts = [];
+  for (const id of ids) {
+    posts.push(await getPost(String(id)));
+  }
+  req.respond({
+    body: JSON.stringify(posts),
+  });
+}
+
+async function handlePostIds(req: ServerRequest) {
+  const posts = [...Array(howManyPosts).keys()].map((postId) => ({slug: String(postId)}));
   req.respond({
     body: JSON.stringify(posts),
   });
@@ -32,7 +45,16 @@ async function handlePosts(req: ServerRequest) {
 
 async function getPost(id: string) {
   await sleep(delayInSeconds);
-  return { postId: id, title: faker.fake('{{lorem.sentence}}'), body: faker.fake('{{lorem.paragraphs}}') };
+  return {
+    frontmatter: {
+      title: `Post ${id}`,
+      date: new Intl.DateTimeFormat('cs-CZ').format(faker.date.past()),
+      description: faker.lorem.sentence(),
+    },
+    fields: {
+      slug: id,
+    },
+  }
 }
 
 for await (const req of server) {
