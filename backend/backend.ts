@@ -44,6 +44,7 @@ async function handlePostIds(req: ServerRequest) {
 }
 
 async function getPost(id: string) {
+  console.log('Getting post ID', id);
   await sleep(delayInSeconds);
   return {
     frontmatter: {

@@ -22,6 +22,7 @@ const BlogPostTemplate = ({ post }) => {
 export default BlogPostTemplate;
 
 export async function getStaticProps({ params: { slug } }) {
+  console.log(`pages/[slug].jsx: running getStaticProps({slug: ${slug}})`);
   return {
     props: {
       post: await getPost(slug),
@@ -30,12 +31,13 @@ export async function getStaticProps({ params: { slug } }) {
 }
 
 export async function getStaticPaths() {
-  const postIds = await getPostIds();
+  console.log(`pages/[slug].jsx: running getStaticPaths`);
+  const postIds = (await getPostIds()).slice(0, 10);
   return {
     paths: postIds.map((postId) => ({
       params: { slug: String(postId) },
     })),
-    fallback: false,
+    fallback: 'blocking',
   };
 }
 
