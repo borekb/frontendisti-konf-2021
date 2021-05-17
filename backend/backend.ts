@@ -3,8 +3,9 @@ import { match as pathToRegexpMatch, MatchResult } from 'https://deno.land/x/pat
 import { faker } from 'https://deno.land/x/deno_faker@v1.0.3/locale/en.ts';
 import { sleep } from 'https://deno.land/x/sleep@v1.2.0/mod.ts';
 
-const howManyPosts = 3;
-const delayInSeconds = Math.random();
+const howManyPostsTotal = 3000;
+const howManyPostsHomepage = 3;
+const delayInSeconds = 0.3;
 
 const PORT = 5001;
 const server = serve({ port: PORT });
@@ -26,9 +27,8 @@ async function handlePost(req: ServerRequest, match: MatchResult<{ id: string }>
 async function handlePosts(req: ServerRequest) {
   // const posts = await Promise.all([...Array(howManyPosts).keys()].map((postId) => getPost(String(postId))));
   // Slow sequential resolution is intentional; no Promise.all!
-  const ids = [...Array(howManyPosts).keys()];
   const posts = [];
-  for (const id of ids) {
+  for (const id of getNumbers(howManyPostsHomepage)) {
     posts.push(await getPost(String(id)));
   }
   req.respond({
@@ -37,9 +37,9 @@ async function handlePosts(req: ServerRequest) {
 }
 
 async function handlePostIds(req: ServerRequest) {
-  const posts = [...Array(howManyPosts).keys()].map((postId) => ({slug: String(postId)}));
+  const postIds = getNumbers(howManyPostsTotal);
   req.respond({
-    body: JSON.stringify(posts),
+    body: JSON.stringify(postIds),
   });
 }
 
@@ -54,7 +54,7 @@ async function getPost(id: string) {
     fields: {
       slug: id,
     },
-  }
+  };
 }
 
 for await (const req of server) {
@@ -75,4 +75,8 @@ interface Route {
   name: string;
   path: string;
   handler: (req: ServerRequest, match: MatchResult<any>) => Promise<void>;
+}
+
+function getNumbers(howMany: number) {
+  return Array.from(new Array(howMany), (_, i) => i + 1);
 }

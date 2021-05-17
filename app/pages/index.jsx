@@ -50,7 +50,7 @@ const BlogIndex = ({ siteTitle, posts }) => {
 
 export default BlogIndex;
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   return {
     props: {
       siteTitle: '{F} konf demo',
@@ -60,7 +60,7 @@ export async function getServerSideProps() {
 }
 
 async function getBlogPosts() {
-  const res = await fetch('http://localhost:5001/posts')
+  const res = await fetch('http://localhost:5001/posts');
   const posts = await res.json();
 
   return posts;
