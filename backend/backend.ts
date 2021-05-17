@@ -44,11 +44,11 @@ async function handlePostIds(req: ServerRequest) {
 }
 
 async function getPost(id: string) {
-  console.log('Getting post ID', id);
   await sleep(delayInSeconds);
+  faker.seed(Number(id));
   return {
     frontmatter: {
-      title: `Post ${id}`,
+      title: `Post ${id} eee`,
       date: new Intl.DateTimeFormat('cs-CZ').format(faker.date.past()),
       description: faker.lorem.sentence(),
     },
