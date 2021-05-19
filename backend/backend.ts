@@ -1,7 +1,5 @@
-import { serve, ServerRequest } from 'https://deno.land/std@0.96.0/http/server.ts';
-import { match as pathToRegexpMatch, MatchResult } from 'https://deno.land/x/path_to_regexp@v6.2.0/index.ts';
-import { faker } from 'https://deno.land/x/deno_faker@v1.0.3/locale/en.ts';
-import { sleep } from 'https://deno.land/x/sleep@v1.2.0/mod.ts';
+import express from 'express';
+import faker from 'faker';
 
 // -------------
 // Tune these:
@@ -9,41 +7,22 @@ const totalPosts = 30;
 const postsOnHomepage = 3;
 const latencyInSeconds = 0.3;
 
-const PORT = 5001;
-const server = serve({ port: PORT });
-console.log(`🚀 Server is running on http://localhost:${PORT}`);
+const app = express();
 
-const routes: Route[] = [
-  { name: 'post', path: '/posts/:id', handler: handlePost },
-  { name: 'posts', path: '/posts', handler: handlePosts },
-  { name: 'postIds', path: '/postIds', handler: handlePostIds },
-];
+app.get('/', (_, res) => res.json('Hello'));
 
-async function handlePost(req: ServerRequest, match: MatchResult<{ id: string }>) {
-  const post = await getPost(match.params.id);
-  req.respond({
-    body: JSON.stringify(post),
-  });
-}
+app.get('/post/:id', async ({ params: { id } }, res) => res.json(await getPost(id)));
 
-async function handlePosts(req: ServerRequest) {
-  // const posts = await Promise.all([...Array(howManyPosts).keys()].map((postId) => getPost(String(postId))));
-  // Slow sequential resolution is intentional; no Promise.all!
-  const posts = [];
-  for (const id of getNumbers(postsOnHomepage)) {
-    posts.push(await getPost(String(id)));
-  }
-  req.respond({
-    body: JSON.stringify(posts),
-  });
-}
+app.get('/posts', async (_, res) => {
+  const posts = await Promise.all(getNumbers(postsOnHomepage).map((postId) => getPost(String(postId))));
+  return res.json(posts);
+});
 
-async function handlePostIds(req: ServerRequest) {
-  const postIds = getNumbers(totalPosts);
-  req.respond({
-    body: JSON.stringify(postIds),
-  });
-}
+app.get('/postIds', (_, res) => res.json(getNumbers(totalPosts)));
+
+app.listen(5001, () => {
+  console.log(`Backend is running at https://localhost:5001`);
+});
 
 async function getPost(id: string) {
   await sleep(latencyInSeconds);
@@ -59,30 +38,14 @@ async function getPost(id: string) {
     },
     html: faker.fake(`
       <p>{{lorem.paragraph}}</p>
-      <p><img alt="Test image" src="https://picsum.photos/id/${100+Number(id)}/600/400"></p>
+      <p><img alt="Test image" src="https://picsum.photos/id/${100 + Number(id)}/600/400"></p>
       <p>{{lorem.paragraph}}</p>
       <p>{{lorem.paragraph}}</p>`),
   };
 }
 
-for await (const req of server) {
-  router(req);
-}
-
-function router(req: ServerRequest) {
-  for (let route of routes) {
-    const match = pathToRegexpMatch(route.path)(req.url);
-    if (match) {
-      return route.handler(req, match);
-    }
-  }
-  req.respond({ body: 'Route Not Found!' });
-}
-
-interface Route {
-  name: string;
-  path: string;
-  handler: (req: ServerRequest, match: MatchResult<any>) => Promise<void>;
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function getNumbers(howMany: number) {

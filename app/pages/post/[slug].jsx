@@ -53,7 +53,7 @@ export async function getStaticPaths() {
 }
 
 async function getPost(id) {
-  const res = await fetch(`http://localhost:5001/posts/${id}`);
+  const res = await fetch(`http://localhost:5001/post/${id}`);
   const post = await res.json();
   return post;
 }
