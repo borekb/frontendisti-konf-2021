@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 6001",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p 6001"
   },
   "dependencies": {
     "next": "^10.2.0",

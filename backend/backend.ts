@@ -3,9 +3,11 @@ import { match as pathToRegexpMatch, MatchResult } from 'https://deno.land/x/pat
 import { faker } from 'https://deno.land/x/deno_faker@v1.0.3/locale/en.ts';
 import { sleep } from 'https://deno.land/x/sleep@v1.2.0/mod.ts';
 
-const howManyPostsTotal = 3000;
-const howManyPostsHomepage = 3;
-const delayInSeconds = 0.3;
+// -------------
+// Tune these:
+const totalPosts = 30;
+const postsOnHomepage = 3;
+const latencyInSeconds = 0.3;
 
 const PORT = 5001;
 const server = serve({ port: PORT });
@@ -28,7 +30,7 @@ async function handlePosts(req: ServerRequest) {
   // const posts = await Promise.all([...Array(howManyPosts).keys()].map((postId) => getPost(String(postId))));
   // Slow sequential resolution is intentional; no Promise.all!
   const posts = [];
-  for (const id of getNumbers(howManyPostsHomepage)) {
+  for (const id of getNumbers(postsOnHomepage)) {
     posts.push(await getPost(String(id)));
   }
   req.respond({
@@ -37,24 +39,29 @@ async function handlePosts(req: ServerRequest) {
 }
 
 async function handlePostIds(req: ServerRequest) {
-  const postIds = getNumbers(howManyPostsTotal);
+  const postIds = getNumbers(totalPosts);
   req.respond({
     body: JSON.stringify(postIds),
   });
 }
 
 async function getPost(id: string) {
-  await sleep(delayInSeconds);
+  await sleep(latencyInSeconds);
   faker.seed(Number(id));
   return {
     frontmatter: {
-      title: `Post ${id} eee`,
+      title: `Post ${id}`,
       date: new Intl.DateTimeFormat('cs-CZ').format(faker.date.past()),
       description: faker.lorem.sentence(),
     },
     fields: {
       slug: id,
     },
+    html: faker.fake(`
+      <p>{{lorem.paragraph}}</p>
+      <p><img alt="Test image" src="https://picsum.photos/id/${100+Number(id)}/600/400"></p>
+      <p>{{lorem.paragraph}}</p>
+      <p>{{lorem.paragraph}}</p>`),
   };
 }
 

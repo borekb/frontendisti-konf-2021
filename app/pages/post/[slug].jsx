@@ -1,6 +1,7 @@
 // @ts-check
 
 import * as React from 'react';
+import Link from 'next/link';
 
 import Layout from '../../components/layout';
 
@@ -15,6 +16,15 @@ const BlogPostTemplate = ({ post }) => {
         <section dangerouslySetInnerHTML={{ __html: post.html }} itemProp='articleBody' />
         <hr />
       </article>
+      <div>
+        <Link href={String(Number(post.fields.slug) - 1)}>
+          <a className='plain-link'>←</a>
+        </Link>
+        {' '}
+        <Link href={String(Number(post.fields.slug) + 1)}>
+          <a className='plain-link'>→</a>
+        </Link>
+      </div>
     </Layout>
   );
 };
