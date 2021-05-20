@@ -3,11 +3,16 @@ import faker from 'faker';
 
 // -------------
 // Tune these:
-const totalPosts = 30;
+const totalPosts = 300;
 const postsOnHomepage = 3;
-const latencyInSeconds = 0.3;
+const latencyInSeconds = 1;
 
 const app = express();
+
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
 
 app.get('/', (_, res) => res.json('Hello'));
 
@@ -29,7 +34,7 @@ async function getPost(id: string) {
   faker.seed(Number(id));
   return {
     frontmatter: {
-      title: `Post ${id}`,
+      title: `Post ${id} CCC`,
       date: new Intl.DateTimeFormat('cs-CZ').format(faker.date.past()),
       description: faker.lorem.sentence(),
     },
@@ -44,8 +49,8 @@ async function getPost(id: string) {
   };
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+function sleep(seconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }
 
 function getNumbers(howMany: number) {
