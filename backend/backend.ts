@@ -11,7 +11,7 @@ async function getPost(id: string) {
     case '1':
       return {
         frontmatter: {
-          title: 'Post 1 DDD',
+          title: 'Post 1',
           date: '12/20/2020',
           description: 'Quisquam recusandae alias consequuntur corporis repellat ratione ut sunt qui.',
         },
