@@ -41,7 +41,7 @@ export async function getStaticProps({ params: { id } }) {
 
 export async function getStaticPaths() {
   return {
-    paths: [...Array(10).keys()].map((id) => ({ params: { id: String(id + 1) } })),
+    paths: [{ params: { id: '1' } }, { params: { id: '2' } }],
     fallback: 'blocking',
   };
 }
@@ -50,10 +50,4 @@ async function getPost(id) {
   const res = await fetch(`http://localhost:5001/post/${id}`);
   const post = await res.json();
   return post;
-}
-
-async function getPostIds() {
-  const res = await fetch('http://localhost:5001/postIds');
-  const postIds = await res.json();
-  return postIds;
 }

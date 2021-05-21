@@ -34,7 +34,7 @@ async function getPost(id: string) {
   faker.seed(Number(id));
   return {
     frontmatter: {
-      title: `Post ${id} CCC`,
+      title: `Post ${id}`,
       date: new Intl.DateTimeFormat('cs-CZ').format(faker.date.past()),
       description: faker.lorem.sentence(),
     },

@@ -1,7 +1,8 @@
 // @ts-check
 import * as React from 'react';
-import Layout from '../components/layout';
 import Link from 'next/link';
+
+import Layout from '../components/layout';
 
 const BlogIndex = ({ posts = [] }) => {
   if (posts.length === 0) {
@@ -23,7 +24,7 @@ const BlogIndex = ({ posts = [] }) => {
               <article className='post-list-item' itemScope itemType='http://schema.org/Article'>
                 <header>
                   <h2>
-                    <Link href={'/post/' + post.fields.slug}>
+                    <Link href={'post/' + post.fields.slug}>
                       <a>
                         <span itemProp='headline'>{title}</span>
                       </a>
@@ -48,15 +49,15 @@ const BlogIndex = ({ posts = [] }) => {
   );
 };
 
+export default BlogIndex;
+
 export async function getStaticProps() {
   return {
     props: {
-      posts: await getBlogPosts(),
-    },
-  };
+      posts: await getBlogPosts()
+    }
+  }
 }
-
-export default BlogIndex;
 
 async function getBlogPosts() {
   const res = await fetch('http://localhost:5001/posts');
