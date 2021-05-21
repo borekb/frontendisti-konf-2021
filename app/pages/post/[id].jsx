@@ -28,14 +28,12 @@ const BlogPostTemplate = ({ post }) => {
   );
 };
 
-export default BlogPostTemplate;
-
 export async function getStaticProps({ params: { id } }) {
   return {
     props: {
       post: await getPost(id),
     },
-    revalidate: 1,
+    revalidate: 1
   };
 }
 
@@ -46,8 +44,9 @@ export async function getStaticPaths() {
   };
 }
 
+export default BlogPostTemplate;
+
 async function getPost(id) {
   const res = await fetch(`http://localhost:5001/post/${id}`);
-  const post = await res.json();
-  return post;
+  return await res.json();
 }

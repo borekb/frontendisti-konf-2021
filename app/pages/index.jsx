@@ -16,7 +16,7 @@ const BlogIndex = ({ posts = [] }) => {
   return (
     <Layout>
       <ol style={{ listStyle: `none` }}>
-        {posts.map((post) => {
+        {posts.map(post => {
           const title = post.frontmatter.title || post.fields.slug;
 
           return (
@@ -54,15 +54,12 @@ export default BlogIndex;
 export async function getStaticProps() {
   return {
     props: {
-      posts: await getBlogPosts()
+      posts: await getBlogPosts(),
     },
-    revalidate: 1
-  }
+  };
 }
 
 async function getBlogPosts() {
   const res = await fetch('http://localhost:5001/posts?limit=3');
-  const posts = await res.json();
-
-  return posts;
+  return await res.json();
 }
