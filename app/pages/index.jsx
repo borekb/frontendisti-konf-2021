@@ -55,7 +55,8 @@ export async function getStaticProps() {
   return {
     props: {
       posts: await getBlogPosts()
-    }
+    },
+    revalidate: 1
   }
 }
 
