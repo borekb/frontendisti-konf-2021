@@ -58,8 +58,6 @@ async function getPost(id: string) {
 // ---------------------
 // Express server
 
-const totalPosts = 300;
-const postsOnHomepage = 3;
 const latencyInSeconds = 1;
 
 const app = express();
@@ -73,19 +71,17 @@ app.get('/', (_, res) => res.json('Hello'));
 
 app.get('/post/:id', async ({ params: { id } }, res) => res.json(await getPost(id)));
 
-app.get('/posts', async (_, res) => {
-  const posts = await Promise.all(getNumbers(postsOnHomepage).map((postId) => getPost(String(postId))));
+app.get('/posts', async (req, res) => {
+  const posts = await Promise.all(getNumbers(Number(req.query.limit ?? 10)).map(postId => getPost(String(postId))));
   return res.json(posts);
 });
-
-app.get('/postIds', (_, res) => res.json(getNumbers(totalPosts)));
 
 app.listen(5001, () => {
   console.log(`Backend is running at https://localhost:5001`);
 });
 
 function sleep(seconds: number) {
-  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
 }
 
 function getNumbers(howMany: number) {

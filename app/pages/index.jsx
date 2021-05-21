@@ -51,9 +51,18 @@ const BlogIndex = ({ posts = [] }) => {
 
 export default BlogIndex;
 
-// async function getBlogPosts() {
-//   const res = await fetch('http://localhost:5001/posts');
-//   const posts = await res.json();
+export async function getStaticProps() {
+  return {
+    props: {
+      posts: await getBlogPosts()
+    },
+    revalidate: 1
+  }
+}
 
-//   return posts;
-// }
+async function getBlogPosts() {
+  const res = await fetch('http://localhost:5001/posts?limit=3');
+  const posts = await res.json();
+
+  return posts;
+}

@@ -30,8 +30,24 @@ const BlogPostTemplate = ({ post }) => {
 
 export default BlogPostTemplate;
 
-// async function getPost(id) {
-//   const res = await fetch(`http://localhost:5001/post/${id}`);
-//   const post = await res.json();
-//   return post;
-// }
+export async function getStaticProps({ params: { id } }) {
+  return {
+    props: {
+      post: await getPost(id),
+    },
+    revalidate: 1,
+  };
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [{ params: { id: '1' } }, { params: { id: '2' } }, { params: { id: '3' } }],
+    fallback: 'blocking',
+  };
+}
+
+async function getPost(id) {
+  const res = await fetch(`http://localhost:5001/post/${id}`);
+  const post = await res.json();
+  return post;
+}

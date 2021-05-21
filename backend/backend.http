@@ -5,4 +5,4 @@ GET http://localhost:5001
 GET http://localhost:5001/post/1
 
 ###
-GET http://localhost:5001/posts
+GET http://localhost:5001/posts?limit=3
