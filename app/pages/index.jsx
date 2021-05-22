@@ -60,6 +60,6 @@ export async function getStaticProps() {
 }
 
 async function getPosts() {
-  const res = await fetch('http://localhost:5001/posts?limit=3');
+  const res = await fetch(`${process.env.API_ROOT}/posts?limit=3`);
   return await res.json();
 }

@@ -47,6 +47,6 @@ export async function getStaticPaths() {
 export default BlogPostTemplate;
 
 async function getPost(id) {
-  const res = await fetch(`http://localhost:5001/post/${id}`);
+  const res = await fetch(`${process.env.API_ROOT}/post/${id}`);
   return await res.json();
 }
