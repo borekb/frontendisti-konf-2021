@@ -51,14 +51,6 @@ const BlogIndex = ({ posts = [] }) => {
 
 export default BlogIndex;
 
-export async function getStaticProps() {
-  return {
-    props: {
-      posts: await getPosts()
-    }
-  }
-}
-
 async function getPosts() {
   const res = await fetch(`${process.env.API_ROOT}/posts?limit=3`);
   return await res.json();
