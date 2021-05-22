@@ -1,9 +1,0 @@
-.plain-link {
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-.blog-post img {
-  width: 100%;
-  aspect-ratio: 600 / 400;
-}
