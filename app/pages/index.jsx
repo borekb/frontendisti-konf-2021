@@ -54,12 +54,12 @@ export default BlogIndex;
 export async function getStaticProps() {
   return {
     props: {
-      posts: await getBlogPosts(),
-    },
-  };
+      posts: await getPosts()
+    }
+  }
 }
 
-async function getBlogPosts() {
+async function getPosts() {
   const res = await fetch('http://localhost:5001/posts?limit=3');
   return await res.json();
 }
