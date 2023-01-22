@@ -30,6 +30,22 @@ const BlogPostTemplate = ({ post }) => {
 
 export default BlogPostTemplate;
 
+export async function getStaticProps({ params: { id } }) {
+  return {
+    props: {
+      post: await getPost(id),
+    },
+    revalidate: 1
+  };
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [{ params: { id: '1' } }, { params: { id: '2' } }, { params: { id: '3' } }],
+    fallback: 'blocking'
+  };
+}
+
 async function getPost(id) {
   const res = await fetch(`${process.env.API_ROOT}/post/${id}`);
   return await res.json();
